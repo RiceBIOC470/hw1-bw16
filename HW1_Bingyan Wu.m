@@ -165,7 +165,7 @@ Cp=cell2mat(data(1,2));
 plate = zeros(6,12);
 for i = 1:6
     for j= 1:12
-        plate(i,j) = Cp_vector(12*(i-1)+j);
+        plate(i,j) = Cp(12*(i-1)+j);
     end
 end
 
