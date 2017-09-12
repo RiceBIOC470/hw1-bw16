@@ -157,15 +157,16 @@ filename = 'qPCRdata.txt';
 fileID = fopen(filename,'r');
 data = textscan(fileID, '%*s%*s%s%*s%f%*s%*s%*s%[^\n]', 72,'Delimiter', '\t','HeaderLines', 2);
 Cp=cell2mat(data(1,2));
-
 %%
 % Part 2: transform this vector into an array representing the layout of
 % the plate. e.g. a 6 row, 12 column array should that data(1,1) = Cp from
 % A1, data(1,2) = Cp from A2, data(2,1) = Cp from B1 etc. 
-plate = zeros(6,12);
-for i = 1:6
-    for j= 1:12
-        plate(i,j) = Cp(12*(i-1)+j);
+
+plate=zeros(6,12);
+for i=1:6
+    for j=1:12
+        n=12*(i-1)+j;
+        plate(i,j)=Cp(n);
     end
 end
 
@@ -179,10 +180,21 @@ end
 % the gene in the 1st condition, CpX is the value of Cp in condition X and
 % CpN0 and CpNX are the same quantitites for the normalization gene.
 % Plot this data in an appropriate way. 
-Normalization=sum(plate(:,10:12),2)./3;
-G1=sum(plate(:, 1:3),2)./3;
-G2=sum(plate(:, 4:6),2)./3;
-G3=sum(plate(:, 7:9),2)./3;
+CpN0=(plate(1,10)+plate(1,11)+plate(1,12))/3;
+n=1;
+fold_change=zeros(6,3);
+for a=1:3:9
+    Cp0=(plate(1,a)+ plate(1,a+1) + plate(1,a+2))/3;
+    for b=1:6
+        CpX= (plate(b,a)+plate(b,a+1)+plate(b,a+2))/3;
+        CpNX=(plate(b,10)+plate(b,11)+plate(b,12))/3;
+        fc=2^[Cp0-CpX-(CpN0-CpNX)];
+        fold_change(b,n)=fc;
+    end
+    n=n+1;
+end
+
+plot(fold_change);
 
 %% Challenge problems that extend the above (optional)
 
