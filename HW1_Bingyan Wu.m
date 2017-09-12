@@ -195,6 +195,9 @@ for a=1:3:9
 end
 
 plot(fold_change);
+xlabel('conditions','FontSize',18);
+ylabel('fold-change','FontSize',18);
+legend({'gene1','gene2','gene3'},'FontSize',18);
 
 %% Challenge problems that extend the above (optional)
 
